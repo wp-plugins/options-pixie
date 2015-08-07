@@ -3,7 +3,7 @@
 /**
  * The dashboard-specific functionality of the plugin.
  *
- * @link       http://www.bytepixie.com/options-pixie/
+ * @link       https://www.bytepixie.com/options-pixie/
  * @since      1.0
  *
  * @package    Options_Pixie
@@ -301,7 +301,7 @@ class Options_Pixie_Admin {
 	 */
 	public function screen_settings( $screen_settings, $screen ) {
 		// Only add our extra screen settings when on our screen.
-		if ( empty( $this->page_hook ) || $screen->id !== $this->page_hook ) {
+		if ( empty( $this->page_hook ) || ! $this->our_screen( $screen, $this->page_hook ) ) {
 			return $screen_settings;
 		}
 
@@ -731,7 +731,7 @@ class Options_Pixie_Admin {
 
 				foreach ( wp_get_sites( array( 'limit' => 0 ) ) as $blog ) {
 					$blog_id     = empty( $blog['blog_id'] ) ? '' : $blog['blog_id'];
-					$description = untrailingslashit( trim( $blog['domain'] ) . '/' . trim( $blog['path'] ) );
+					$description = untrailingslashit( trim( $blog['domain'] ) . trim( $blog['path'] ) );
 
 					$selected = '';
 					if ( $current_blog_id == $blog_id ) {
@@ -754,5 +754,21 @@ class Options_Pixie_Admin {
 		}
 
 		return $output;
+	}
+
+	/**
+	 * Is the given screen ours?
+	 *
+	 * @param WP_Screen $screen
+	 * @param string    $page_hook
+	 *
+	 * @return bool
+	 */
+	public static function our_screen( $screen, $page_hook ) {
+		if ( ! empty( $screen->id ) && ! empty( $page_hook ) && ( $screen->id === $page_hook || $screen->id === $page_hook . '-network' ) ) {
+			return true;
+		}
+
+		return false;
 	}
 }

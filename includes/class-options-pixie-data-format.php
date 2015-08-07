@@ -3,7 +3,7 @@
 /**
  * Data formatting utilities class.
  *
- * @link       http://www.bytepixie.com/options-pixie/
+ * @link       https://www.bytepixie.com/options-pixie/
  * @since      1.0
  *
  * @package    Options_Pixie
@@ -53,6 +53,12 @@ class Options_Pixie_Data_Format {
 	private static function _to_html( $data, $recursion_level = 0 ) {
 		$html = '';
 		if ( is_array( $data ) ) {
+			// Normally data needing conversion to an array is passed.
+			// However, if the passed data is already an array bump the recursion level to start showing its children properly.
+			if ( 0 === $recursion_level ) {
+				$recursion_level = 1;
+			}
+
 			$array_class = '';
 			foreach ( $data as $key => $value ) {
 				if ( ! is_int( $key ) ) {
@@ -222,7 +228,7 @@ class Options_Pixie_Data_Format {
 	 * @return bool
 	 */
 	public static function is_base64( $data ) {
-		if ( base64_encode( base64_decode( $data, true ) ) === $data ) {
+		if ( is_string( $data ) && base64_encode( base64_decode( $data, true ) ) === $data ) {
 
 			$data = base64_decode( $data, true );
 
